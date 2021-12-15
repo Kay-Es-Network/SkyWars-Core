@@ -4,7 +4,7 @@ import it.aendrix.skywars.arena.Arena;
 import it.aendrix.skywars.arena.BaseArena;
 import it.aendrix.skywars.arena.State;
 import it.aendrix.skywars.main.Main;
-import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -24,8 +24,8 @@ public class SkyWarsArena extends Arena implements BaseArena {
         arene.put(name,this);
     }
 
-    public SkyWarsArena(String name, int maxPlayers, int minPlayers, int timeToStart, int timeMax, SkyWarsType type) {
-        super(name, maxPlayers, minPlayers, timeToStart, timeMax);
+    public SkyWarsArena(String name, int maxPlayers, int minPlayers, int timeToStart, SkyWarsType type, Location lobbyLocation, Location specLocation, Location[] spawnLocations) {
+        super(name, maxPlayers, minPlayers, timeToStart, lobbyLocation, specLocation, spawnLocations);
         this.type = type;
 
         if (arene==null) arene = new HashMap<>();
@@ -42,6 +42,16 @@ public class SkyWarsArena extends Arena implements BaseArena {
 
                 if (getState().equals(State.READY)) {
 
+                    /*
+                        IL GIOCO è PRONTO PER INIZIARE IN QUANTO è STATO RAGGIUNTO IL
+                        MINIMO DI GIOCATORI PER GIOCARE
+                     */
+
+                    if (time <= 0)
+                        setState(State.STARTING);
+
+                    time--;
+
                     if (getPlayers().size()>=getMaxPlayers()) {
                         setState(State.FULL);
                         time = 10;
@@ -50,25 +60,69 @@ public class SkyWarsArena extends Arena implements BaseArena {
                         time = timeToStart;
                     }
 
-                } else if (getState().equals(State.WAITING)) {
+                }
+                else if (getState().equals(State.WAITING)) {
+
+                    /*
+                        IL GIOCO NON POSSIEDE ANCORA ABBASTANZA GIOCATORI PER INIZIARE
+                     */
 
                     if (getPlayers().size()>=getMinPlayers())
                         setState(State.READY);
+                }
+                else if (getState().equals(State.INGAME)) {
 
-                } else if (getState().equals(State.INGAME)) {
+                    /*
+                        IL GIOCO è INIZIATO
+                     */
 
-                } else if (getState().equals(State.FULL)) {
+                    time--;
+
+                }
+                else if (getState().equals(State.FULL)) {
+
+                    /*
+                        IL GIOCO HA RAGGIUNTO IL MASSIMO DI GIOCATORI PER GIOCARE.
+                        INIZIERà PIù VELOCEMENTE
+                     */
+
+                    if (time <= 0)
+                        setState(State.STARTING);
+
+                    time--;
 
                     if (getPlayers().size()<getMaxPlayers()) {
                         setState(State.READY);
                         time = timeToStart;
                     }
 
-                } else if (getState().equals(State.STOPPED)) {
+                }
+                else if (getState().equals(State.STOPPED)) {
+
+                    /*
+                        IL GIOCO NON PUò INIZIARE E DOVRà ESSERE AVVIATO DA UN AMMINISTRATORE
+                     */
 
                 } else if (getState().equals(State.RESTARTING)) {
 
+                    /*
+                        IL GIOCO SI STA RIAVVIANDO
+                     */
 
+                } else if (getState().equals(State.STARTING)) {
+
+                    /*
+                        IL GIOCO SI STA AVVIANDO
+                     */
+
+                    time = type.getTimeMax();
+                    //Carica chest
+                    int i = 0;
+                    //Teletrasporta tutti i giocatori in game
+                    for (Player p : getPlayers()) {
+                        p.teleport(spawnLocations[i]);
+                        i++;
+                    }
 
                 }
 
