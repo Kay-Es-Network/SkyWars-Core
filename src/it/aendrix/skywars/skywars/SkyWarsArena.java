@@ -3,33 +3,48 @@ package it.aendrix.skywars.skywars;
 import it.aendrix.skywars.arena.Arena;
 import it.aendrix.skywars.arena.BaseArena;
 import it.aendrix.skywars.arena.State;
+import it.aendrix.skywars.items.Title;
 import it.aendrix.skywars.main.Main;
+import it.aendrix.skywars.main.utils;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SkyWarsArena extends Arena implements BaseArena {
+public final class SkyWarsArena extends Arena implements BaseArena, Listener {
 
     public static HashMap<String, SkyWarsArena> arene;
     private SkyWarsType type;
+    private Title title;
     //Shops e altro
-
-    public SkyWarsArena(String name) {
-        super();
-
-        if (arene==null) arene = new HashMap<>();
-        arene.put(name,this);
-    }
 
     public SkyWarsArena(String name, int maxPlayers, int minPlayers, int timeToStart, SkyWarsType type, Location lobbyLocation, Location specLocation, Location[] spawnLocations) {
         super(name, maxPlayers, minPlayers, timeToStart, lobbyLocation, specLocation, spawnLocations);
         this.type = type;
 
         if (arene==null) arene = new HashMap<>();
-        arene.put(name,this);
+        arene.put(name.toUpperCase(),this);
+
+        this.title = new Title();
+        title.setFadeInTime(0);
+        title.setFadeOutTime(0);
+        title.setStayTime(1);
+        title.setTitle("");
+
+        super.setState(State.STOPPED);
+
+        Main.getInstance().getServer().getPluginManager().registerEvents(this,Main.getInstance());
+    }
+
+    public SkyWarsArena() {
+        super();
     }
 
     @Override
@@ -47,13 +62,11 @@ public class SkyWarsArena extends Arena implements BaseArena {
                         MINIMO DI GIOCATORI PER GIOCARE
                      */
 
-                    if (time <= 0)
+                    if (time <= 11)
                         setState(State.STARTING);
 
-                    time--;
-
                     if (getPlayers().size()>=getMaxPlayers()) {
-                        setState(State.FULL);
+                        setState(State.STARTING);
                         time = 10;
                     } else if (getPlayers().size()<getMinPlayers()) {
                         setState(State.WAITING);
@@ -76,57 +89,53 @@ public class SkyWarsArena extends Arena implements BaseArena {
                         IL GIOCO è INIZIATO
                      */
 
-                    time--;
+                    if (time<=0)
+                        setState(State.RESTARTING);
 
                 }
-                else if (getState().equals(State.FULL)) {
+                else if (getState().equals(State.RESTARTING)) {
 
                     /*
-                        IL GIOCO HA RAGGIUNTO IL MASSIMO DI GIOCATORI PER GIOCARE.
-                        INIZIERà PIù VELOCEMENTE
+                        IL GIOCO SI STA RIAVVIANDO
                      */
 
-                    if (time <= 0)
-                        setState(State.STARTING);
+                    stop();
+                    setState(State.WAITING);
+                }
+                else if (getState().equals(State.STARTING)) {
 
-                    time--;
+                    /*
+                        IL GIOCO SI STA AVVIANDO
+                     */
 
                     if (getPlayers().size()<getMaxPlayers()) {
                         setState(State.READY);
                         time = timeToStart;
                     }
 
-                }
-                else if (getState().equals(State.STOPPED)) {
+                    if (time == 0) {
+                        time = type.getTimeMax();
 
-                    /*
-                        IL GIOCO NON PUò INIZIARE E DOVRà ESSERE AVVIATO DA UN AMMINISTRATORE
-                     */
+                        title.setTitle(utils.color("&6&lINIZIO"));
 
-                } else if (getState().equals(State.RESTARTING)) {
-
-                    /*
-                        IL GIOCO SI STA RIAVVIANDO
-                     */
-
-                } else if (getState().equals(State.STARTING)) {
-
-                    /*
-                        IL GIOCO SI STA AVVIANDO
-                     */
-
-                    time = type.getTimeMax();
-                    //Carica chest
-                    int i = 0;
-                    //Teletrasporta tutti i giocatori in game
-                    for (Player p : getPlayers()) {
-                        p.teleport(spawnLocations[i]);
-                        i++;
+                        //Carica chest
+                        int i = 0;
+                        //Teletrasporta tutti i giocatori in game
+                        for (Player p : getPlayers()) {
+                            p.teleport(spawnLocations[i]);
+                            title.send(p);
+                            i++;
+                        }
+                    } else {
+                        title.setTitle(utils.color("&b&l"+time));
+                        for (Player p : players)
+                            title.send(p);
                     }
 
                 }
 
-                setTime(getTime()-1);
+                if (!getState().equals(State.STOPPED))
+                    time--;
             }
 
         }.runTaskTimer(Main.getInstance(),20L,20L);
@@ -136,6 +145,27 @@ public class SkyWarsArena extends Arena implements BaseArena {
     @Override
     public void stop() {
 
+        for (Player p : super.getPlayers()) {
+            p.teleport(lobbyLocation);
+        }
+
+        reset();
+    }
+
+    @Override
+    public void reset() {
+        for (Block block : super.placedBlocks)
+            block.getLocation().getBlock().setType(Material.AIR);
+
+        for (Block block : super.brokenBlocks)
+            block.getLocation().getBlock().setType(block.getType());
+
+        super.brokenBlocks.clear();
+        super.placedBlocks.clear();
+        super.players.clear();
+
+        super.time = super.timeToStart;
+        super.state = State.STARTING;
     }
 
     public static HashMap<String, SkyWarsArena> getArene() {
@@ -154,4 +184,23 @@ public class SkyWarsArena extends Arena implements BaseArena {
     public void setType(SkyWarsType type) {
         this.type = type;
     }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent e) {
+        Player p = e.getPlayer();
+        if (super.containsPlayer(p.getName())) {
+            Block block = e.getBlock();
+            if (!utils.blockRemoveList(block, super.getPlacedBlocks()))
+                super.getBrokenBlocks().add(block);
+        }
+    }
+
+    @EventHandler
+    public void onPlace(BlockPlaceEvent e) {
+        Player p = e.getPlayer();
+        if (super.containsPlayer(p.getName()))
+            super.getPlacedBlocks().add(e.getBlock());
+    }
+
+
 }

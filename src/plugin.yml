@@ -1,0 +1,11 @@
+name: SkyWars-Core
+author: AEndrix
+description: SkyWars
+version: 1.0.0
+main: it.aendrix.skywars.main.Main
+
+commands:
+    skywars:
+        aliases: [sw]
+        description: Skywars main command
+        default: OP

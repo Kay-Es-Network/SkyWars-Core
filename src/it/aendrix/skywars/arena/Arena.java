@@ -15,6 +15,7 @@ public class Arena{
     protected int time;
     protected int timeToStart;
     protected ArrayList<Block> placedBlocks;
+    protected ArrayList<Block> brokenBlocks;
     protected State state;
 
     protected Location lobbyLocation, specLocation;
@@ -31,6 +32,7 @@ public class Arena{
         this.time = timeToStart;
         this.timeToStart = timeToStart;
         this.placedBlocks = new ArrayList<>();
+        this.brokenBlocks = new ArrayList<>();
         this.state = State.STOPPED;
         this.lobbyLocation = lobbyLocation;
         this.specLocation = specLocation;
@@ -124,4 +126,20 @@ public class Arena{
     public void setSpawnLocations(Location[] spawnLocations) {
         this.spawnLocations = spawnLocations;
     }
+
+    public ArrayList<Block> getBrokenBlocks() {
+        return brokenBlocks;
+    }
+
+    public void setBrokenBlocks(ArrayList<Block> brokenBlocks) {
+        this.brokenBlocks = brokenBlocks;
+    }
+
+    public boolean containsPlayer(String name) {
+        for (Player p : players)
+            if (p!=null && p.getName().equalsIgnoreCase(name))
+                return true;
+        return false;
+    }
+
 }
