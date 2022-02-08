@@ -2,6 +2,7 @@ package it.aendrix.skywars.files;
 
 import it.aendrix.skywars.items.Chest;
 import it.aendrix.skywars.items.Item;
+import it.aendrix.skywars.main.utils;
 import it.aendrix.skywars.skywars.SkyWarsArena;
 import it.aendrix.skywars.skywars.SkyWarsType;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,12 +37,11 @@ public class SkyWarsTypeYML implements FileYML{
         }
 
         ArrayList<Chest> c = new ArrayList<>();
-        ArrayList<Item> it = new ArrayList<Item>();
 
         if (cfg.getString("types." + name + ".chests")!=null) {
 
             for (String key : cfg.getConfigurationSection("types." + name + ".chests").getKeys(false)) {
-                it.clear();
+                ArrayList<Item> it = new ArrayList<Item>();
                 if (cfg.getString("types." + name + ".chests." + key + ".items")!=null) {
                     for (String itkey : cfg.getConfigurationSection("types." + name + ".chests." + key + ".items").getKeys(false)) {
                         it.add(
@@ -67,7 +67,7 @@ public class SkyWarsTypeYML implements FileYML{
             cfg.getInt("types."+name+".timeMax"),
             cfg.getInt("types."+name+".pointOnJoin"),
             cfg.getInt("types."+name+".pointOnKill"),
-            cfg.getInt("types."+name+".pointOnWin"),
+            cfg.getInt("types."+name+".pointOnKill"),
             c.toArray(new Chest[c.size()])
         );
 
@@ -85,5 +85,34 @@ public class SkyWarsTypeYML implements FileYML{
             a.add(key);
 
         return a.toArray(new String[a.size()]);
+    }
+
+    public static void save(SkyWarsType type) {
+        cfg.set("types."+type.getName()+".name", type.getName());
+        cfg.set("types."+type.getName()+".timeMax", type.getTimeMax());
+        cfg.set("types."+type.getName()+".pointOnJoin", type.getPointOnJoin());
+        cfg.set("types."+type.getName()+".pointOnKill", type.getPointOnKill());
+        cfg.set("types."+type.getName()+".pointOnWin", type.getPointOnWin());
+
+        cfg.set("types."+type.getName()+".chests",null);
+
+        for (int i = 0; i<type.getChestsType().length; i++) {
+            Chest c = type.getChestsType()[i];
+            cfg.set("types."+type.getName()+".chests."+i+".minItems", c.getMinItems());
+            cfg.set("types."+type.getName()+".chests."+i+".maxItems", c.getMaxItems());
+            cfg.set("types."+type.getName()+".chests."+i+".level", c.getLevel());
+            for (int j = 0; j<c.getItems().size(); j++) {
+                Item x = c.getItems().get(j);
+                cfg.set("types."+type.getName()+".chests."+i+".items."+j+".item", x.getItem());
+                cfg.set("types."+type.getName()+".chests."+i+".items."+j+".minInGame", x.getMinInGame());
+                cfg.set("types."+type.getName()+".chests."+i+".items."+j+".maxInGame", x.getMaxInGame());
+            }
+        }
+
+        try {
+            cfg.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

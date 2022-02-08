@@ -1,6 +1,5 @@
 package it.aendrix.skywars.arena;
 
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -14,29 +13,23 @@ public class Arena{
     protected int minPlayers;
     protected int time;
     protected int timeToStart;
+    protected int timeMax;
     protected ArrayList<Block> placedBlocks;
-    protected ArrayList<Block> brokenBlocks;
     protected State state;
-
-    protected Location lobbyLocation, specLocation;
-    protected Location[] spawnLocations;
 
     public Arena() {
     }
 
-    public Arena(String name, int maxPlayers, int minPlayers, int timeToStart, Location lobbyLocation, Location specLocation, Location[] spawnLocations) {
+    public Arena(String name, int maxPlayers, int minPlayers, int timeToStart, int timeMax) {
         this.name = name;
         this.players = new ArrayList<>();
         this.maxPlayers = maxPlayers;
         this.minPlayers = minPlayers;
         this.time = timeToStart;
         this.timeToStart = timeToStart;
+        this.timeMax = timeMax;
         this.placedBlocks = new ArrayList<>();
-        this.brokenBlocks = new ArrayList<>();
         this.state = State.STOPPED;
-        this.lobbyLocation = lobbyLocation;
-        this.specLocation = specLocation;
-        this.spawnLocations = spawnLocations;
     }
 
     public ArrayList<Player> getPlayers() {
@@ -95,6 +88,14 @@ public class Arena{
         this.time = time;
     }
 
+    public int getTimeMax() {
+        return timeMax;
+    }
+
+    public void setTimeMax(int timeMax) {
+        this.timeMax = timeMax;
+    }
+
     public int getTimeToStart() {
         return timeToStart;
     }
@@ -102,44 +103,4 @@ public class Arena{
     public void setTimeToStart(int timeToStart) {
         this.timeToStart = timeToStart;
     }
-
-    public Location getLobbyLocation() {
-        return lobbyLocation;
-    }
-
-    public void setLobbyLocation(Location lobbyLocation) {
-        this.lobbyLocation = lobbyLocation;
-    }
-
-    public Location getSpecLocation() {
-        return specLocation;
-    }
-
-    public void setSpecLocation(Location specLocation) {
-        this.specLocation = specLocation;
-    }
-
-    public Location[] getSpawnLocations() {
-        return spawnLocations;
-    }
-
-    public void setSpawnLocations(Location[] spawnLocations) {
-        this.spawnLocations = spawnLocations;
-    }
-
-    public ArrayList<Block> getBrokenBlocks() {
-        return brokenBlocks;
-    }
-
-    public void setBrokenBlocks(ArrayList<Block> brokenBlocks) {
-        this.brokenBlocks = brokenBlocks;
-    }
-
-    public boolean containsPlayer(String name) {
-        for (Player p : players)
-            if (p!=null && p.getName().equalsIgnoreCase(name))
-                return true;
-        return false;
-    }
-
 }

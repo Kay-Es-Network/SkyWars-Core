@@ -1,11 +1,19 @@
 package it.aendrix.skywars.commands;
 
+import it.aendrix.skywars.GUI.SkyWarsTypeEdit.MainMenu;
+import it.aendrix.skywars.arena.Border;
 import it.aendrix.skywars.arena.State;
+import it.aendrix.skywars.exception.ArenaInGameException;
+import it.aendrix.skywars.exception.ArenaIsFullException;
+import it.aendrix.skywars.exception.PlayerAlredyInGameException;
 import it.aendrix.skywars.files.ArenaYML;
+import it.aendrix.skywars.items.Title;
 import it.aendrix.skywars.main.Main;
 import it.aendrix.skywars.main.Messages;
 import it.aendrix.skywars.main.utils;
+import it.aendrix.skywars.skywars.ChestAdmin;
 import it.aendrix.skywars.skywars.SkyWarsArena;
+import it.aendrix.skywars.skywars.SkyWarsType;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,8 +48,9 @@ public class SkyWarsArenaCommands implements CommandExecutor {
                     return true;
                 }
 
-                SkyWarsArena arena = new SkyWarsArena(args[1],0,0,0,null,null,null,null);
+                SkyWarsArena arena = new SkyWarsArena(args[1],0,0,0,null,null,null,null,null);
                 SkyWarsArena.getArene().put(arena.getName().toUpperCase(), arena);
+                arena.setState(State.STOPPED);
 
                 Messages.sendMessage(sender, "skywars.commands.arena-created", null);
                 return true;
@@ -117,6 +126,7 @@ public class SkyWarsArenaCommands implements CommandExecutor {
                 utils.sendMsg(sender, "&b Tempo di inizio: &f"+arena.getTimeToStart());
                 utils.sendMsg(sender, "&b Stato: &f"+arena.getState());
                 utils.sendMsg(sender, "&b Giocatori attuali: &f"+arena.getPlayers().size());
+                utils.sendMsg(sender, "&b Secondi attuali: &f"+arena.getTime());
 
                 return true;
             }
@@ -413,6 +423,275 @@ public class SkyWarsArenaCommands implements CommandExecutor {
                 Messages.sendMessage(sender, "skywars.commands.arena-spawn-remove", null);
 
                 ArenaYML.save(arena);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("join")) {
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                if (!(sender instanceof Player)) {
+                    Messages.sendMessage(sender, "general.player-sender", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+                try {
+                    arena.join((Player)sender);
+
+                    Messages.sendMessage(sender, "skywars.game.arena-join", null);
+                    Messages.broadcastMessage("skywars.game.arena-join-all", new String[]{"%PLAYER%;"+sender.getName()}, arena.getPlayers());
+                } catch (PlayerAlredyInGameException e) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-alredy-join", null);
+                } catch (ArenaInGameException e) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-ingame", null);
+                } catch (ArenaIsFullException e) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-full", null);
+                }
+
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("stop")) {
+                if (!sender.hasPermission("skywars.stop") || !sender.hasPermission("skywars.*")) {
+                    Messages.sendMessage(sender, "general.no-permission", null);
+                    return true;
+                }
+
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+
+                arena.setState(State.STOPPED);
+                Messages.sendMessage(sender, "skywars.commands.arena-stopped", null);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("start")) {
+                if (!sender.hasPermission("skywars.start") || !sender.hasPermission("skywars.*")) {
+                    Messages.sendMessage(sender, "general.no-permission", null);
+                    return true;
+                }
+
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+
+                arena.setState(State.WAITING);
+                Messages.sendMessage(sender, "skywars.commands.arena-started", null);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("restart")) {
+                if (!sender.hasPermission("skywars.start") || !sender.hasPermission("skywars.*")) {
+                    Messages.sendMessage(sender, "general.no-permission", null);
+                    return true;
+                }
+
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+
+                arena.setState(State.RESTARTING);
+                Messages.sendMessage(sender, "skywars.commands.arena-restarted", null);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("createtype")) {
+                if (!sender.hasPermission("skywars.types") || !sender.hasPermission("skywars.*")) {
+                    Messages.sendMessage(sender, "general.no-permission", null);
+                    return true;
+                }
+
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (SkyWarsType.types.containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.type-exist", null);
+                    return true;
+                }
+
+                SkyWarsType type = new SkyWarsType(args[1], 600, 0, 10, 50, null);
+                SkyWarsType.types.put(args[1].toUpperCase(), type);
+
+                Messages.sendMessage(sender, "skywars.commands.type-created", null);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("removetype")) {
+                if (!sender.hasPermission("skywars.types") || !sender.hasPermission("skywars.*")) {
+                    Messages.sendMessage(sender, "general.no-permission", null);
+                    return true;
+                }
+
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsType.types.containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.type-not-exist", null);
+                    return true;
+                }
+
+                SkyWarsType.types.remove(args[1].toUpperCase());
+
+                Messages.sendMessage(sender, "skywars.commands.type-removed", null);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("settype")) {
+                if (!sender.hasPermission("skywars.types") || !sender.hasPermission("skywars.*")) {
+                    Messages.sendMessage(sender, "general.no-permission", null);
+                    return true;
+                }
+
+                if (args.length<3) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                if (!SkyWarsType.types.containsKey(args[2].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.type-not-exists", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+                SkyWarsType type = SkyWarsType.types.get(args[2].toUpperCase());
+
+                arena.setType(type);
+
+                Messages.sendMessage(sender, "skywars.commands.arena-type-set", null);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("edittypes")) {
+                if (!sender.hasPermission("skywars.types") || !sender.hasPermission("skywars.*")) {
+                    Messages.sendMessage(sender, "general.no-permission", null);
+                    return true;
+                }
+
+                if (!(sender instanceof Player)) {
+                    Messages.sendMessage(sender, "general.player-sender", null);
+                    return true;
+                }
+
+                (new MainMenu()).open((Player)sender);
+
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("chestadmin")) {
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                if (!(sender instanceof Player)) {
+                    Messages.sendMessage(sender, "general.player-sender", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+
+                ChestAdmin.toggleAdmin((Player)sender, arena);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("pos1") || args[0].equalsIgnoreCase("corner1")) {
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                if (!(sender instanceof Player)) {
+                    Messages.sendMessage(sender, "general.player-sender", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+                arena.setCorner1(((Player)sender).getLocation().getBlock().getLocation());
+
+                if (arena.getCorner2()!=null)
+                    arena.setBorder(new Border(arena.getCorner1(), arena.getCorner2()));
+
+                ArenaYML.save(arena);
+                Messages.sendMessage(sender, "skywars.commands.corner-set", null);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("pos2") || args[0].equalsIgnoreCase("corner2")) {
+                if (args.length==1) {
+                    Messages.sendMessage(sender, "general.no-arguments", null);
+                    return true;
+                }
+
+                if (!SkyWarsArena.getArene().containsKey(args[1].toUpperCase())) {
+                    Messages.sendMessage(sender, "skywars.commands.arena-not-exists", null);
+                    return true;
+                }
+
+                if (!(sender instanceof Player)) {
+                    Messages.sendMessage(sender, "general.player-sender", null);
+                    return true;
+                }
+
+                SkyWarsArena arena = SkyWarsArena.getArene().get(args[1].toUpperCase());
+                arena.setCorner2(((Player)sender).getLocation().getBlock().getLocation());
+
+                if (arena.getCorner1()!=null)
+                    arena.setBorder(new Border(arena.getCorner1(), arena.getCorner2()));
+
+                ArenaYML.save(arena);
+                Messages.sendMessage(sender, "skywars.commands.corner-set", null);
                 return true;
             }
 
