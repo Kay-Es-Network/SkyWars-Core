@@ -6,8 +6,4 @@ public class PlayerAlredyInGameException extends Exception{
         super();
     }
 
-    public PlayerAlredyInGameException(String message) {
-        super(message);
-    }
-
 }

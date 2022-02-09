@@ -6,8 +6,4 @@ public class ArenaInGameException  extends Exception{
         super();
     }
 
-    public ArenaInGameException(String message) {
-        super(message);
-    }
-
 }

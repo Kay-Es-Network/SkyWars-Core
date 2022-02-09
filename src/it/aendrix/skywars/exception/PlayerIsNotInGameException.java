@@ -6,8 +6,4 @@ public class PlayerIsNotInGameException extends Exception{
         super();
     }
 
-    public PlayerIsNotInGameException(String message) {
-        super(message);
-    }
-
 }

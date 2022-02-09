@@ -1,18 +1,23 @@
 package it.aendrix.skywars.skywars;
 
 import it.aendrix.skywars.items.Chest;
-import it.aendrix.skywars.main.utils;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SkyWarsType {
-
+public class SkyWarsType implements Serializable {
     public static HashMap<String, SkyWarsType> types;
 
     private String name;
+
     private int timeMax;
-    private int pointOnJoin, pointOnKill, pointOnWin;
+
+    private int pointOnJoin;
+
+    private int pointOnKill;
+
+    private int pointOnWin;
+
     private Chest[] chestsType;
 
     public SkyWarsType(String name, int timeMax, int pointOnJoin, int pointOnKill, int pointOnWin, Chest[] chestsType) {
@@ -24,14 +29,13 @@ public class SkyWarsType {
         this.chestsType = chestsType;
         if (this.chestsType == null) {
             this.chestsType = new Chest[5];
-            for (int i = 0; i<5; i++) {
-                this.chestsType[i] = new Chest(2,6,i+1,new ArrayList<>());
-            }
+            for (int i = 0; i < 5; i++)
+                this.chestsType[i] = new Chest(2, 6, i + 1, new ArrayList<>());
         }
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -39,7 +43,7 @@ public class SkyWarsType {
     }
 
     public int getTimeMax() {
-        return timeMax;
+        return this.timeMax;
     }
 
     public void setTimeMax(int timeMax) {
@@ -47,7 +51,7 @@ public class SkyWarsType {
     }
 
     public int getPointOnJoin() {
-        return pointOnJoin;
+        return this.pointOnJoin;
     }
 
     public void setPointOnJoin(int pointOnJoin) {
@@ -55,7 +59,7 @@ public class SkyWarsType {
     }
 
     public int getPointOnKill() {
-        return pointOnKill;
+        return this.pointOnKill;
     }
 
     public void setPointOnKill(int getPointOnKill) {
@@ -63,7 +67,7 @@ public class SkyWarsType {
     }
 
     public int getPointOnWin() {
-        return pointOnWin;
+        return this.pointOnWin;
     }
 
     public void setPointOnWin(int getPointOnWin) {
@@ -71,7 +75,7 @@ public class SkyWarsType {
     }
 
     public Chest[] getChestsType() {
-        return chestsType;
+        return this.chestsType;
     }
 
     public void setChestsType(Chest[] chestsType) {
@@ -85,5 +89,4 @@ public class SkyWarsType {
     public static void setTypes(HashMap<String, SkyWarsType> types) {
         SkyWarsType.types = types;
     }
-
 }

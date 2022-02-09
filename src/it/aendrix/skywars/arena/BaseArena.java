@@ -2,9 +2,7 @@ package it.aendrix.skywars.arena;
 
 public interface BaseArena {
 
-    public void start();
-    public void stop();
-    public void reset();
-
-
+    void start();
+    void stop();
+    void reset();
 }

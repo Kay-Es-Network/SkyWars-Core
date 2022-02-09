@@ -1,16 +1,17 @@
 package it.aendrix.skywars.items;
 
 import it.aendrix.skywars.main.utils;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Item {
-
     private ItemStack item;
-    private int minInGame, maxInGame;
+
+    private int minInGame;
+
+    private int maxInGame;
 
     public Item(ItemStack item, int maxInGame, int minInGame) {
         this.item = item;
@@ -25,7 +26,7 @@ public class Item {
     }
 
     public ItemStack getItem() {
-        return item;
+        return this.item;
     }
 
     public void setItem(ItemStack item) {
@@ -33,7 +34,7 @@ public class Item {
     }
 
     public int getMaxInGame() {
-        return maxInGame;
+        return this.maxInGame;
     }
 
     public void setMaxInGame(int maxInGame) {
@@ -41,7 +42,7 @@ public class Item {
     }
 
     public int getMinInGame() {
-        return minInGame;
+        return this.minInGame;
     }
 
     public void setMinInGame(int minInGame) {
@@ -49,17 +50,15 @@ public class Item {
     }
 
     public ItemStack toItemStack() {
-        ItemStack n = utils.copyItem(item);
+        ItemStack n = utils.copyItem(this.item);
         ItemMeta meta = n.getItemMeta();
         List<String> lore = new ArrayList<>();
         if (meta.hasLore())
             lore = meta.getLore();
-
-        lore.add("Max:"+maxInGame);
-        lore.add("Min:"+minInGame);
+        lore.add("Max:" + this.maxInGame);
+        lore.add("Min:" + this.minInGame);
         meta.setLore(lore);
         n.setItemMeta(meta);
-
         return n;
     }
 }

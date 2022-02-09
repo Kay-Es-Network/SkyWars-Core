@@ -6,8 +6,4 @@ public class ArenaIsFullException  extends Exception{
         super();
     }
 
-    public ArenaIsFullException(String message) {
-        super(message);
-    }
-
 }

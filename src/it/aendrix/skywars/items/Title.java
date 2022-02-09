@@ -1,25 +1,21 @@
 package it.aendrix.skywars.items;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import java.io.Serializable;
 import org.bukkit.entity.Player;
 
-
-public class Title {
-
+public class Title implements Serializable {
     private String title = "";
+
     private String subtitle = "";
+
     private int fadeInTime = 0;
+
     private int stayTime = 1;
+
     private int fadeOutTime = 0;
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -27,7 +23,7 @@ public class Title {
     }
 
     public String getSubtitle() {
-        return subtitle;
+        return this.subtitle;
     }
 
     public void setSubtitle(String subtitle) {
@@ -35,7 +31,7 @@ public class Title {
     }
 
     public int getFadeInTime() {
-        return fadeInTime;
+        return this.fadeInTime;
     }
 
     public void setFadeInTime(int fadeInTime) {
@@ -43,7 +39,7 @@ public class Title {
     }
 
     public int getStayTime() {
-        return stayTime;
+        return this.stayTime;
     }
 
     public void setStayTime(int stayTime) {
@@ -51,7 +47,7 @@ public class Title {
     }
 
     public int getFadeOutTime() {
-        return fadeOutTime;
+        return this.fadeOutTime;
     }
 
     public void setFadeOutTime(int fadeOutTime) {
@@ -59,6 +55,6 @@ public class Title {
     }
 
     public void send(Player p) {
-        p.sendTitle(title, subtitle, fadeInTime*20, stayTime*20, fadeOutTime*20);
+        p.sendTitle(this.title, this.subtitle, this.fadeInTime * 20, this.stayTime * 20, this.fadeOutTime * 20);
     }
 }

@@ -3,8 +3,9 @@ package it.aendrix.skywars.items;
 import java.util.ArrayList;
 
 public class Chest {
-
-    private int minItems, maxItems, level;
+    private int minItems;
+    private int maxItems;
+    private int level;
     private ArrayList<Item> items;
 
     public Chest(int minItems, int maxItems, int level, ArrayList<Item> items) {
@@ -15,7 +16,7 @@ public class Chest {
     }
 
     public int getMinItems() {
-        return minItems;
+        return this.minItems;
     }
 
     public void setMinItems(int minItems) {
@@ -23,7 +24,7 @@ public class Chest {
     }
 
     public int getMaxItems() {
-        return maxItems;
+        return this.maxItems;
     }
 
     public void setMaxItems(int maxItems) {
@@ -31,7 +32,7 @@ public class Chest {
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public void setLevel(int level) {
@@ -39,7 +40,7 @@ public class Chest {
     }
 
     public ArrayList<Item> getItems() {
-        return items;
+        return this.items;
     }
 
     public void setItems(ArrayList<Item> items) {
