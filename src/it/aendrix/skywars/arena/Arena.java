@@ -1,23 +1,17 @@
 package it.aendrix.skywars.arena;
 
-import it.aendrix.skywars.events.PlayerArenaKillEvent;
-import it.aendrix.skywars.events.PlayerChatArenaEvent;
-import it.aendrix.skywars.events.PlayerJoinArenaEvent;
-import it.aendrix.skywars.events.PlayerLeaveArenaEvent;
-import it.aendrix.skywars.events.PlayerOutArenaBordersEvent;
-import it.aendrix.skywars.events.PlayerWinArenaEvent;
+import it.aendrix.skywars.events.*;
 import it.aendrix.skywars.exception.ArenaInGameException;
 import it.aendrix.skywars.exception.ArenaIsFullException;
 import it.aendrix.skywars.exception.PlayerAlredyInGameException;
 import it.aendrix.skywars.exception.PlayerIsNotInGameException;
-import it.aendrix.skywars.items.KillType;
-import it.aendrix.skywars.items.SortedList;
+import it.aendrix.skywars.items.Team;
+import it.aendrix.skywars.items.enums.KillType;
+import it.aendrix.skywars.items.enums.State;
+import it.aendrix.skywars.main.utils.SortedList;
 import it.aendrix.skywars.main.Main;
 import it.aendrix.skywars.main.Messages;
-import it.aendrix.skywars.main.utils;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
+import it.aendrix.skywars.main.utils.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -28,6 +22,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Arena implements Listener, Serializable {
     private static HashMap<String, Arena> arenaPlayers;
@@ -368,7 +366,13 @@ public abstract class Arena implements Listener, Serializable {
     public void onChat(PlayerChatArenaEvent e) {
         Player p = e.getPlayer();
         if (equals(e.getArena()))
-            if (this.players.contains(p) && this.state.equals(State.INGAME)) {
+            if (this instanceof TeamArena && e.getMessage().charAt(0) != '!' && this.state.equals(State.INGAME)) {
+                for (Team t : ((TeamArena) this).teams)
+                    if (t.getPlayers().contains(p)) {
+                        Messages.broadcastMessage("skywars.chat.ingame", new String[]{"%PLAYER%;" + p.getName(), "%MESSAGE%;" + e.getMessage()}, t.getPlayers());
+                        break;
+                    }
+            } else if (this.players.contains(p) && this.state.equals(State.INGAME)) {
                 Messages.broadcastMessage("skywars.chat.ingame", new String[] { "%PLAYER%;" + p.getName(), "%MESSAGE%;" + e.getMessage() }, this.players);
                 Messages.broadcastMessage("skywars.chat.ingame", new String[] { "%PLAYER%;" + p.getName(), "%MESSAGE%;" + e.getMessage() }, this.spectators);
             } else if (this.spectators.contains(p) && this.state.equals(State.INGAME)) {

@@ -1,17 +1,18 @@
 package it.aendrix.skywars.arena;
 
-import it.aendrix.skywars.items.BoundingBox;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Random;
+import it.aendrix.skywars.main.utils.BoundingBox;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Random;
 
 public class Border implements Serializable {
     private final int x;

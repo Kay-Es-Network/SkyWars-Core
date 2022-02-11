@@ -5,7 +5,7 @@ import it.aendrix.skywars.arena.Arena;
 import it.aendrix.skywars.arena.ArenaEvents;
 import it.aendrix.skywars.arena.Loader;
 import it.aendrix.skywars.commands.SkyWarsArenaCommands;
-import it.aendrix.skywars.items.MessageRequire;
+import it.aendrix.skywars.main.utils.MessageRequire;
 import it.aendrix.skywars.skywars.ChestAdmin;
 import org.bukkit.plugin.java.JavaPlugin;
 

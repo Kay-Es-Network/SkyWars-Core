@@ -1,7 +1,8 @@
 package it.aendrix.skywars.items;
 
-import java.io.Serializable;
 import org.bukkit.entity.Player;
+
+import java.io.Serializable;
 
 public class Title implements Serializable {
     private String title = "";

@@ -3,11 +3,12 @@ package it.aendrix.skywars.files;
 import it.aendrix.skywars.items.Chest;
 import it.aendrix.skywars.items.Item;
 import it.aendrix.skywars.skywars.SkyWarsType;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SkyWarsTypeYML implements FileYML {
     private static final File file = new File(directory + File.separator + "chests.yml");

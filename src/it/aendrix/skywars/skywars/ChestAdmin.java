@@ -1,8 +1,7 @@
 package it.aendrix.skywars.skywars;
 
 import it.aendrix.skywars.main.Messages;
-import it.aendrix.skywars.main.utils;
-import java.util.HashMap;
+import it.aendrix.skywars.main.utils.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,6 +13,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+
+import java.util.HashMap;
 
 public class ChestAdmin implements Listener {
     private static HashMap<String, SkyWarsArena> admins = new HashMap<>();

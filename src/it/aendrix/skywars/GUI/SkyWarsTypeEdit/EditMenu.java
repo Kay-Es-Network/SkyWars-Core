@@ -2,7 +2,7 @@ package it.aendrix.skywars.GUI.SkyWarsTypeEdit;
 
 import it.aendrix.skywars.files.SkyWarsTypeYML;
 import it.aendrix.skywars.items.Chest;
-import it.aendrix.skywars.main.utils;
+import it.aendrix.skywars.main.utils.utils;
 import it.aendrix.skywars.skywars.SkyWarsType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

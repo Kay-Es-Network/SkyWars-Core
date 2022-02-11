@@ -5,9 +5,10 @@ import it.aendrix.skywars.files.SkyWarsTypeYML;
 import it.aendrix.skywars.main.Main;
 import it.aendrix.skywars.skywars.SkyWarsArena;
 import it.aendrix.skywars.skywars.SkyWarsType;
+
 import java.util.HashMap;
 
-public class Loader {
+public final class Loader {
 
     public Loader() {
         SkyWarsArena.arene = new HashMap<>();

@@ -1,10 +1,11 @@
 package it.aendrix.skywars.items;
 
-import it.aendrix.skywars.main.utils;
-import java.util.ArrayList;
-import java.util.List;
+import it.aendrix.skywars.main.utils.utils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Item {
     private ItemStack item;

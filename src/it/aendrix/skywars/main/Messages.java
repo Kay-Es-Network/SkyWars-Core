@@ -1,14 +1,16 @@
 package it.aendrix.skywars.main;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import it.aendrix.skywars.main.utils.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Messages {
     private static final File file = new File("plugins/SkyWars-Core" + File.separator + "messages.yml");
@@ -141,6 +143,7 @@ public class Messages {
         loadString("skywars.game.player-win-all", "&7[!] &b%PLAYER%&f ha vinto!");
         loadString("skywars.chat.lobby", "&b%PLAYER% &8&f%MESSAGE%");
         loadString("skywars.chat.ingame", "&b%PLAYER% &8&f%MESSAGE%");
+        loadString("skywars.chat.ingame-team", "&c&lTEAM &b%PLAYER% &8&f%MESSAGE%");
         loadString("skywars.chat.spector", "&b%PLAYER% &8&7%MESSAGE%");
         cfg.save(file);
     }

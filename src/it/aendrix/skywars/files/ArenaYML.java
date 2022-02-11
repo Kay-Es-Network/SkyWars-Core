@@ -1,18 +1,19 @@
 package it.aendrix.skywars.files;
 
 import it.aendrix.skywars.arena.Border;
-import it.aendrix.skywars.arena.State;
-import it.aendrix.skywars.main.utils;
+import it.aendrix.skywars.items.enums.State;
+import it.aendrix.skywars.main.utils.utils;
 import it.aendrix.skywars.skywars.SkyWarsArena;
 import it.aendrix.skywars.skywars.SkyWarsType;
+import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ArenaYML implements FileYML {
     private static final File file = new File(directory + File.separator + "arena.yml");

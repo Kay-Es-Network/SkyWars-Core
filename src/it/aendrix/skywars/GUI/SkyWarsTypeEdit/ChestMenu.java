@@ -3,7 +3,7 @@ package it.aendrix.skywars.GUI.SkyWarsTypeEdit;
 import it.aendrix.skywars.GUI.GUI;
 import it.aendrix.skywars.items.Chest;
 import it.aendrix.skywars.main.Main;
-import it.aendrix.skywars.main.utils;
+import it.aendrix.skywars.main.utils.utils;
 import it.aendrix.skywars.skywars.SkyWarsType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

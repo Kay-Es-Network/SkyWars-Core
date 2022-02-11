@@ -4,7 +4,8 @@ import it.aendrix.skywars.events.PlayerArenaKillEvent;
 import it.aendrix.skywars.events.PlayerChatArenaEvent;
 import it.aendrix.skywars.events.PlayerLeaveArenaEvent;
 import it.aendrix.skywars.events.PlayerOutArenaBordersEvent;
-import it.aendrix.skywars.items.KillType;
+import it.aendrix.skywars.items.enums.KillType;
+import it.aendrix.skywars.items.enums.State;
 import it.aendrix.skywars.main.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -58,6 +59,12 @@ public class ArenaEvents implements Listener {
                 !arenaPlayers.containsKey(e.getDamager().getName()) ||
                 !arenaPlayers.containsKey(e.getEntity().getName()))
             return;
+        Arena arena = arenaPlayers.get(e.getDamager().getName());
+        if (arena instanceof TeamArena)
+            if (((TeamArena) arena).inTeam(((Player) e.getDamager()).getPlayer(),((Player) e.getEntity()).getPlayer())) {
+                e.setCancelled(true);
+                return;
+            }
         final String name = e.getEntity().getName();
         if (lastDamageTimePlayer.containsKey(name)) {
             lastDamageTimePlayer.get(name).seconds = 10;
@@ -81,6 +88,11 @@ public class ArenaEvents implements Listener {
         if (!(e.getEntity() instanceof Player p) || !arenaPlayers.containsKey(e.getEntity().getName()))
             return;
         Arena arena = arenaPlayers.get(p.getName());
+        if (arena instanceof TeamArena)
+            if (((TeamArena) arena).inTeam(((Player) e.getEntity()).getPlayer(),p)) {
+                e.setCancelled(true);
+                return;
+            }
         if (p.getHealth() - e.getDamage() <= 0.0D) {
             if (arena.containsPlayer(p.getName()) && arena.getState().equals(State.INGAME))
                 if (lastDamageTimePlayer.containsKey(p.getName()) && arena.containsPlayer(p.getLastDamageCause().getEntity().getName())) {

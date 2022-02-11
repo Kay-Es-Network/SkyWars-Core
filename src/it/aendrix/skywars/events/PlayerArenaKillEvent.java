@@ -1,7 +1,7 @@
 package it.aendrix.skywars.events;
 
 import it.aendrix.skywars.arena.Arena;
-import it.aendrix.skywars.items.KillType;
+import it.aendrix.skywars.items.enums.KillType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
