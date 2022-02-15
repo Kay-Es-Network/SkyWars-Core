@@ -1,7 +1,7 @@
 name: SkyWars-Core
 author: AEndrix
 description: SkyWars
-version: 1.0.2
+version: 1.0.3
 main: it.aendrix.skywars.main.Main
 softdepend: [Multiverse-Core]
 

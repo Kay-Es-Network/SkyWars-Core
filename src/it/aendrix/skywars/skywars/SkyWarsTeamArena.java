@@ -3,11 +3,13 @@ package it.aendrix.skywars.skywars;
 import it.aendrix.skywars.arena.Arena;
 import it.aendrix.skywars.arena.BaseArena;
 import it.aendrix.skywars.arena.Border;
-import it.aendrix.skywars.items.enums.State;
+import it.aendrix.skywars.arena.TeamArena;
 import it.aendrix.skywars.events.PlayerWinArenaEvent;
 import it.aendrix.skywars.exception.PlayerIsNotInGameException;
 import it.aendrix.skywars.items.Chest;
+import it.aendrix.skywars.items.Team;
 import it.aendrix.skywars.items.Title;
+import it.aendrix.skywars.items.enums.State;
 import it.aendrix.skywars.main.Main;
 import it.aendrix.skywars.main.utils.utils;
 import org.bukkit.Bukkit;
@@ -24,15 +26,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SkyWarsArena extends Arena implements BaseArena, Serializable {
+public class SkyWarsTeamArena extends TeamArena implements BaseArena, Serializable {
+
     private SkyWarsType type;
-
     private Title title;
-
     private HashMap<Location, Integer> chests;
 
-    public SkyWarsArena(String name, int maxPlayers, int minPlayers, int timeToStart, SkyWarsType type, Location lobbyLocation, Location specLocation, Location[] spawnLocations, Border border) {
-        super(name, maxPlayers, minPlayers, timeToStart, lobbyLocation, specLocation, spawnLocations, border);
+    public SkyWarsTeamArena(String name, int maxPlayers, int minPlayers, int timeToStart, SkyWarsType type, Location lobbyLocation, Location specLocation, Location[] spawnLocations, Border border, ArrayList<Team> teams, int teamPlayers) {
+        super(name, maxPlayers, minPlayers, timeToStart, lobbyLocation, specLocation, spawnLocations, border, teams, teamPlayers);
         this.type = type;
         if (arene == null)
             arene = new HashMap<>();
@@ -50,56 +51,56 @@ public class SkyWarsArena extends Arena implements BaseArena, Serializable {
     public void start() {
         (new BukkitRunnable() {
             public void run() {
-                if (SkyWarsArena.this.getState().equals(State.STOPPED))
+                if (getState().equals(State.STOPPED))
                     return;
-                if (SkyWarsArena.this.getState().equals(State.READY)) {
-                    if (SkyWarsArena.this.time <= 11)
-                        SkyWarsArena.this.setState(State.STARTING);
-                    if (SkyWarsArena.this.getPlayers().size() >= SkyWarsArena.this.getMaxPlayers()) {
-                        SkyWarsArena.this.setState(State.STARTING);
-                        SkyWarsArena.this.time = 10;
-                    } else if (SkyWarsArena.this.getPlayers().size() < SkyWarsArena.this.getMinPlayers()) {
-                        SkyWarsArena.this.setState(State.WAITING);
-                        SkyWarsArena.this.time = SkyWarsArena.this.timeToStart;
+                if (getState().equals(State.READY)) {
+                    if (time <= 11)
+                        setState(State.STARTING);
+                    if (getPlayers().size() >= getMaxPlayers()) {
+                        setState(State.STARTING);
+                        time = 10;
+                    } else if (getPlayers().size() < getMinPlayers()) {
+                        setState(State.WAITING);
+                        time = timeToStart;
                     }
-                } else if (SkyWarsArena.this.getState().equals(State.WAITING)) {
-                    if (SkyWarsArena.this.getPlayers().size() >= SkyWarsArena.this.getMinPlayers())
-                        SkyWarsArena.this.setState(State.READY);
-                } else if (SkyWarsArena.this.getState().equals(State.INGAME)) {
-                    if (SkyWarsArena.this.time <= 0) {
-                        SkyWarsArena.this.setState(State.RESTARTING);
+                } else if (getState().equals(State.WAITING)) {
+                    if (getPlayers().size() >= getMinPlayers())
+                        setState(State.READY);
+                } else if (getState().equals(State.INGAME)) {
+                    if (time <= 0) {
+                        setState(State.RESTARTING);
                         return;
                     }
-                    if (SkyWarsArena.this.players.size() < 2) {
-                        if (SkyWarsArena.this.players.size() != 0) {
-                            Player winner = SkyWarsArena.this.players.get(0);
+                    if (players.size() < 2) {
+                        if (players.size() != 0) {
+                            Player winner = players.get(0);
                             Bukkit.getServer().getPluginManager().callEvent(new PlayerWinArenaEvent(winner, Arena.getArenaPlayers().get(winner.getName())));
                         } else {
-                            SkyWarsArena.this.setState(State.RESTARTING);
+                            setState(State.RESTARTING);
                         }
                         return;
                     }
-                } else if (SkyWarsArena.this.getState().equals(State.RESTARTING)) {
-                    SkyWarsArena.this.stop();
-                    SkyWarsArena.this.setState(State.WAITING);
-                } else if (SkyWarsArena.this.getState().equals(State.STARTING)) {
-                    if (SkyWarsArena.this.getPlayers().size() < SkyWarsArena.this.getMinPlayers()) {
-                        SkyWarsArena.this.setState(State.WAITING);
-                        SkyWarsArena.this.time = SkyWarsArena.this.timeToStart;
+                } else if (getState().equals(State.RESTARTING)) {
+                    stop();
+                    setState(State.WAITING);
+                } else if (getState().equals(State.STARTING)) {
+                    if (getPlayers().size() < getMinPlayers()) {
+                        setState(State.WAITING);
+                        time = timeToStart;
                     }
-                    if (SkyWarsArena.this.time == 0) {
-                        SkyWarsArena.this.time = SkyWarsArena.this.type.getTimeMax();
-                        SkyWarsArena.this.title.setTitle(utils.color("&6&lINIZIO"));
-                        Chest[] chestlevels = SkyWarsArena.this.type.getChestsType();
+                    if (time == 0) {
+                        time = type.getTimeMax();
+                        title.setTitle(utils.color("&6&lINIZIO"));
+                        Chest[] chestlevels = type.getChestsType();
                         HashMap<Location, Integer> chestscopy = new HashMap<>();
-                        for (Location loc : SkyWarsArena.this.chests.keySet())
-                            chestscopy.put(loc, SkyWarsArena.this.chests.get(loc));
+                        for (Location loc : chests.keySet())
+                            chestscopy.put(loc, chests.get(loc));
                         int i;
                         for (i = 1; i < 6; i++) {
                             if (chestscopy.containsValue(i)) {
                                 Chest c = chestlevels[Math.abs(-1 + i)];
                                 ArrayList<ItemStack> items = utils.itemListCreator(c.getItems());
-                                Location[] locs = (Location[])chestscopy.keySet().toArray((Object[])new Location[SkyWarsArena.this.chests.size()]);
+                                Location[] locs = (Location[])chestscopy.keySet().toArray((Object[])new Location[chests.size()]);
                                 for (Location loc : locs) {
                                     if (chestscopy.get(loc) != null && chestscopy.get(loc) == i) {
                                         loc.getBlock().setType(Material.CHEST);
@@ -118,22 +119,22 @@ public class SkyWarsArena extends Arena implements BaseArena, Serializable {
                             }
                         }
                         i = 0;
-                        for (Player p : SkyWarsArena.this.getPlayers()) {
-                            p.teleport(SkyWarsArena.this.spawnLocations[i]);
+                        for (Player p : getPlayers()) {
+                            p.teleport(spawnLocations[i]);
                             p.setGameMode(GameMode.SURVIVAL);
                             p.setExp(0.0F);
-                            SkyWarsArena.this.title.send(p);
+                            title.send(p);
                             i++;
                         }
-                        SkyWarsArena.this.setState(State.INGAME);
+                        setState(State.INGAME);
                     } else {
-                        SkyWarsArena.this.title.setTitle(utils.color("&b&l" + SkyWarsArena.this.time));
-                        for (Player p : SkyWarsArena.this.players)
-                            SkyWarsArena.this.title.send(p);
+                        title.setTitle(utils.color("&b&l" + time));
+                        for (Player p : players)
+                            title.send(p);
                     }
                 }
-                if (!SkyWarsArena.this.getState().equals(State.WAITING))
-                    SkyWarsArena.this.time--;
+                if (!getState().equals(State.WAITING))
+                    time--;
             }
         }).runTaskTimer(Main.getInstance(), 20L, 20L);
     }
@@ -181,7 +182,7 @@ public class SkyWarsArena extends Arena implements BaseArena, Serializable {
     }
 
     public static void setArene(HashMap<String, Arena> arene) {
-        SkyWarsArena.arene = arene;
+        SkyWarsTeamArena.arene = arene;
     }
 
     public SkyWarsType getType() {
@@ -207,4 +208,5 @@ public class SkyWarsArena extends Arena implements BaseArena, Serializable {
     public void setChests(HashMap<Location, Integer> chests) {
         this.chests = chests;
     }
+    
 }

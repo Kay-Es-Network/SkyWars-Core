@@ -1,5 +1,6 @@
 package it.aendrix.skywars.skywars;
 
+import it.aendrix.skywars.arena.Arena;
 import it.aendrix.skywars.main.Messages;
 import it.aendrix.skywars.main.utils.utils;
 import org.bukkit.Bukkit;
@@ -17,11 +18,11 @@ import org.bukkit.inventory.Inventory;
 import java.util.HashMap;
 
 public class ChestAdmin implements Listener {
-    private static HashMap<String, SkyWarsArena> admins = new HashMap<>();
+    private static HashMap<String, Arena> admins = new HashMap<>();
 
     private static HashMap<String, Inventory> adminsexinv = new HashMap<>();
 
-    public static void toggleAdmin(Player player, SkyWarsArena arena) {
+    public static void toggleAdmin(Player player, Arena arena) {
         if (admins.containsKey(player.getName())) {
             player.getInventory().clear();
             Inventory inv = adminsexinv.get(player.getName());
@@ -49,11 +50,11 @@ public class ChestAdmin implements Listener {
         }
     }
 
-    public static HashMap<String, SkyWarsArena> getAdmins() {
+    public static HashMap<String, Arena> getAdmins() {
         return admins;
     }
 
-    public static void setAdmins(HashMap<String, SkyWarsArena> admins) {
+    public static void setAdmins(HashMap<String, Arena> admins) {
         ChestAdmin.admins = admins;
     }
 
@@ -79,17 +80,32 @@ public class ChestAdmin implements Listener {
         Location loc = b.getLocation();
         if (!admins.containsKey(p.getName()))
             return;
-        SkyWarsArena arena = admins.get(p.getName());
+        Arena arena = admins.get(p.getName());
         if (b.getType().equals(Material.COAL_BLOCK)) {
-            arena.getChests().put(b.getLocation(), 1);
+            if (arena instanceof SkyWarsArena)
+                ((SkyWarsArena)arena).getChests().put(b.getLocation(), 1);
+            else if (arena instanceof SkyWarsTeamArena)
+                ((SkyWarsTeamArena)arena).getChests().put(b.getLocation(), 1);
         } else if (b.getType().equals(Material.IRON_BLOCK)) {
-            arena.getChests().put(b.getLocation(), 2);
+            if (arena instanceof SkyWarsArena)
+                ((SkyWarsArena)arena).getChests().put(b.getLocation(), 2);
+            else if (arena instanceof SkyWarsTeamArena)
+                ((SkyWarsTeamArena)arena).getChests().put(b.getLocation(), 2);
         } else if (b.getType().equals(Material.GOLD_BLOCK)) {
-            arena.getChests().put(b.getLocation(), 3);
+            if (arena instanceof SkyWarsArena)
+                ((SkyWarsArena)arena).getChests().put(b.getLocation(), 3);
+            else if (arena instanceof SkyWarsTeamArena)
+                ((SkyWarsTeamArena)arena).getChests().put(b.getLocation(), 3);
         } else if (b.getType().equals(Material.DIAMOND_BLOCK)) {
-            arena.getChests().put(b.getLocation(), 4);
+            if (arena instanceof SkyWarsArena)
+                ((SkyWarsArena)arena).getChests().put(b.getLocation(), 4);
+            else if (arena instanceof SkyWarsTeamArena)
+                ((SkyWarsTeamArena)arena).getChests().put(b.getLocation(), 4);
         } else if (b.getType().equals(Material.EMERALD_BLOCK)) {
-            arena.getChests().put(b.getLocation(), 5);
+            if (arena instanceof SkyWarsArena)
+                ((SkyWarsArena)arena).getChests().put(b.getLocation(), 5);
+            else if (arena instanceof SkyWarsTeamArena)
+                ((SkyWarsTeamArena)arena).getChests().put(b.getLocation(), 5);
         } else {
             return;
         }
@@ -103,9 +119,12 @@ public class ChestAdmin implements Listener {
         Block b = e.getBlock();
         if (!admins.containsKey(p.getName()))
             return;
-        SkyWarsArena arena = admins.get(p.getName());
+        Arena arena = admins.get(p.getName());
         if (b.getType().equals(Material.CHEST)) {
-            arena.getChests().remove(b.getLocation());
+            if (arena instanceof SkyWarsArena)
+                ((SkyWarsArena)arena).getChests().remove(b.getLocation());
+            else if (arena instanceof SkyWarsTeamArena)
+                ((SkyWarsTeamArena)arena).getChests().remove(b.getLocation());
         } else {
             return;
         }

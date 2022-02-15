@@ -4,6 +4,7 @@ import it.aendrix.skywars.arena.Border;
 import it.aendrix.skywars.items.enums.State;
 import it.aendrix.skywars.main.utils.utils;
 import it.aendrix.skywars.skywars.SkyWarsArena;
+import it.aendrix.skywars.skywars.SkyWarsTeamArena;
 import it.aendrix.skywars.skywars.SkyWarsType;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -78,6 +79,41 @@ public class ArenaYML implements FileYML {
     }
 
     public static void save(SkyWarsArena arena) {
+        cfg.set("arenas." + arena.getName() + ".arena", "SKYWARS");
+        cfg.set("arenas." + arena.getName() + ".name", arena.getName());
+        cfg.set("arenas." + arena.getName() + ".maxPlayers", arena.getMaxPlayers());
+        cfg.set("arenas." + arena.getName() + ".minPlayers", arena.getMinPlayers());
+        cfg.set("arenas." + arena.getName() + ".timeToStart", arena.getTimeToStart());
+        if (arena.getType() != null)
+            cfg.set("arenas." + arena.getName() + ".type", arena.getType().getName());
+        cfg.set("arenas." + arena.getName() + ".lobby", utils.locationString(arena.getLobbyLocation()));
+        cfg.set("arenas." + arena.getName() + ".spec", utils.locationString(arena.getSpecLocation()));
+        cfg.set("arenas." + arena.getName() + ".corner1", utils.locationString(arena.getCorner1()));
+        cfg.set("arenas." + arena.getName() + ".corner2", utils.locationString(arena.getCorner2()));
+        if (arena.getSpawnLocations() != null)
+            for (int i = 0; i < (arena.getSpawnLocations()).length; i++) {
+                if (arena.getSpawnLocations()[i] != null)
+                    cfg.set("arenas." + arena.getName() + ".spawn." + i, utils.locationString(arena.getSpawnLocations()[i]));
+            }
+        if (arena.getChests() != null)
+            for (int i = 1; i < 6; i++) {
+                ArrayList<String> chest = new ArrayList<>();
+                if (arena.getChests().containsValue(i)) {
+                    for (Location loc : arena.getChests().keySet()) {
+                        if (arena.getChests().get(loc) == i)
+                            chest.add(utils.locationString(loc));
+                    }
+                    cfg.set("arenas." + arena.getName() + ".chests." + i, chest);
+                }
+            }
+        try {
+            cfg.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void save(SkyWarsTeamArena arena) {
         cfg.set("arenas." + arena.getName() + ".arena", "SKYWARS");
         cfg.set("arenas." + arena.getName() + ".name", arena.getName());
         cfg.set("arenas." + arena.getName() + ".maxPlayers", arena.getMaxPlayers());

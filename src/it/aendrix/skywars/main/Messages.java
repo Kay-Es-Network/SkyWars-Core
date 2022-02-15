@@ -89,9 +89,33 @@ public class Messages {
         loadString("general.error-arguments", "&f&lSKYWARS &b&fI dati inseriti non corrispondono");
         loadString("general.player-sender", "&f&lSKYWARS &b&fSolo un giocatore pueseguire questa azione");
         loadString("general.error", "&f&lSKYWARS &b&fErrore");
-        loadString("skywars.commands.help", " /!newline&f/&bsw create <&ename&b> &7&fCrea un Arena/!newline&f/&bsw remove <&ename&b> &7&fRimuovi un Arena/!newline&f/&bsw setminplayers <&ename&b> <&eamount&b> &7&fImposta il minimo di giocatori di un Arena/!newline&f/&bsw setmaxplayers <&ename&b> <&eamount&b> &7&fImposta il massimo di giocatori di un Arena/!newline&f/&bsw settimestart <&ename&b> <&eamount&b> &7&fImposta il tempo di un Arena/!newline&f/&bsw setlobby <&ename&b> &7&fImposta la lobby di un Arena/!newline&f/&bsw setspec <&ename&b> &7&fImposta il punto spettatori di un Arena/!newline&f/&bsw addspawn <&ename&b> <&eid&b> &7&fAggiungi uno spawn ad un Arena/!newline&f/&bsw removespawn <&ename&b> <&eid&b> &7&fRimuovi uno spawn ad un Arena/!newline&f/&bsw list &7&fOttieni una lista di tutte le Arene/!newline&f/&bsw info <&ename&b> &7&fOttieni le informazioni di un Arena/!newline&f/&bsw join <&ename&b> &7&fEntra in una Arena/!newline&f/&bsw createtype <&ename&b> &7&fCrea un tipo/!newline&f/&bsw removetype <&ename&b> &7&fRimuovi un tipo/!newline&f/&bsw settype <&earena&b> <&etype&b> &7&fImposta il tipo di un Arena/!newline&f/&bsw edittypes &7&fModifica i vari Tipi disponibili/!newline&f/&bsw chestadmin <&earena&b>&7&fAbilita o disabilita modalit&bChestAdmin/!newline&f/&bsw corner1 <&earena&b>&7&fImposta il primo angolo dell'Arena/!newline&f/&bsw corner2 <&earena&b>&7&fImposta il secondo angolo dell'Arena/!newline ");
+        loadString("skywars.commands.help", " /!newline" +
+                "&f/&bsw create <&ename&b> <&eSingle|Team&b> &7&fCrea un Arena/!newline" +
+                "&f/&bsw remove <&ename&b> &7&fRimuovi un Arena/!newline" +
+                "&f/&bsw setminplayers <&ename&b> <&eamount&b> &7&fImposta il minimo di giocatori di un Arena/!newline" +
+                "&f/&bsw setmaxplayers <&ename&b> <&eamount&b> &7&fImposta il massimo di giocatori di un Arena/!newline" +
+                "&f/&bsw setmaxteamplayers <&ename&b> <&ecolor&b> <&eamount&b> &7&fImposta il massimo di giocatori di un Team di un Arena/!newline" +
+                "&f/&bsw settimestart <&ename&b> <&eamount&b> &7&fImposta il tempo di un Arena/!newline" +
+                "&f/&bsw setlobby <&ename&b> &7&fImposta la lobby di un Arena/!newline" +
+                "&f/&bsw setspec <&ename&b> &7&fImposta il punto spettatori di un Arena/!newline" +
+                "&f/&bsw addspawn <&ename&b> <&eid&b> &7&fAggiungi uno spawn ad un Arena/!newline" +
+                "&f/&bsw addteam <&ename&b> <&ecolor&b> &7&fAggiungi un Team di un Arena/!newline" +
+                "&f/&bsw removeteam <&ename&b> <&ecolor&b> &7&fAggiungi un Team di un Arena/!newline" +
+                "&f/&bsw removespawn <&ename&b> <&eid&b> &7&fRimuovi uno spawn ad un Arena/!newline" +
+                "&f/&bsw list &7&fOttieni una lista di tutte le Arene/!newline" +
+                "&f/&bsw info <&ename&b> &7&fOttieni le informazioni di un Arena/!newline" +
+                "&f/&bsw join <&ename&b> &7&fEntra in una Arena/!newline" +
+                "&f/&bsw createtype <&ename&b> &7&fCrea un tipo/!newline" +
+                "&f/&bsw removetype <&ename&b> &7&fRimuovi un tipo/!newline" +
+                "&f/&bsw settype <&earena&b> <&etype&b> &7&fImposta il tipo di un Arena/!newline" +
+                "&f/&bsw edittypes &7&fModifica i vari Tipi disponibili/!newline" +
+                "&f/&bsw chestadmin <&earena&b>&7&fAbilita o disabilita modalit&bChestAdmin/!newline" +
+                "&f/&bsw corner1 <&earena&b>&7&fImposta il primo angolo dell'Arena/!newline" +
+                "&f/&bsw corner2 <&earena&b>&7&fImposta il secondo angolo dell'Arena/!newline" +
+                "");
         loadString("skywars.commands.arena-exists", "&f&lSKYWARS &b&fQuesta arena esiste già");
                 loadString("skywars.commands.arena-not-exists", "&f&lSKYWARS &b&fQuesta arena non esiste");
+        loadString("skywars.commands.arena-creating-mode", "&f&lSKYWARS &b&fSeleziona una modalità tra Single o Team");
         loadString("skywars.commands.arena-created", "&f&lSKYWARS &b&fArena creata");
         loadString("skywars.commands.arena-removed", "&f&lSKYWARS &b&fArena rimossa");
         loadString("skywars.commands.arena-list", "&f&lLISTA ARENE");
@@ -129,6 +153,7 @@ public class Messages {
         loadString("skywars.commands.chest-exist", "&f&lSKYWARS &b&fChest esistente");
         loadString("skywars.commands.chest-not-exist", "&f&lSKYWARS &b&fChest non esistente");
         loadString("skywars.commands.corner-set", "&f&lSKYWARS &b&fAngolo impostato");
+        loadString("skywars.commands.team-maxplayers-set", "&f&lSKYWARS &b&fMassimo di giocatori per team impostato");
         loadString("skywars.game.arena-border", "&f&lSKYWARS &b&fHai raggiunto il bordo dell'arena");
         loadString("skywars.game.player-kill", "&c[!] &fSei stato ucciso da &b%KILLER%");
         loadString("skywars.game.player-kill-all", "&7[!] &b%VICTIM%&f stato ucciso da &b%KILLER%");
